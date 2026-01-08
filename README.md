@@ -72,6 +72,8 @@ Ce bloc récupère le Top 50 des vidéos tendances en France via l’API YouTube
 Il génère des diagrammes circulaires comparant les catégories de contenus tendances et celles effectivement consommées.
 La structure CATEGORY_MAP permet de traduire les identifiants numériques en catégories lisibles.
 
+![](Catégories_en_Tendance.png)
+
 - Interprétation analytique
 
 Cette étape répond à la question centrale de l’influence visible des tendances.
