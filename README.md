@@ -248,6 +248,152 @@ Ce bloc récupère le Top 50 des vidéos tendances en France via l’API YouTube
 Il génère des diagrammes circulaires comparant les catégories de contenus tendances et celles effectivement consommées.
 La structure CATEGORY_MAP permet de traduire les identifiants numériques en catégories lisibles.
 
+```
+import pandas as pd
+import json
+from googleapiclient.discovery import build
+from tabulate import tabulate
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# ==========================================
+# CONFIGURATION
+# ==========================================
+API_KEY = "AIzaSyAWr5iPhQC3U5Af_Ts5bf8qPc6BP_rTJH0" # Collez votre clé ici
+TAKEOUT_FILE = "watch-history.json"
+# Liste de correspondance des ID et noms de catégories (les plus courants)
+CATEGORY_MAP = {
+    "1": "Film & Animation",
+    "2": "Autos & Vehicles",
+    "10": "Music",
+    "15": "Pets & Animals",
+    "17": "Sports",
+    "19": "Travel & Events",
+    "20": "Gaming",
+    "22": "People & Blogs",
+    "23": "Comedy",
+    "24": "Entertainment",
+    "25": "News & Politics",
+    "26": "Howto & Style",
+    "27": "Education",
+    "28": "Science & Technology",
+    "29": "Nonprofits & Activism",
+    "30": "Movies",
+    "43": "Shows"
+}
+
+# ==========================================
+# NOUVELLE FONCTION : AFFICHAGE DES CATÉGORIES
+# ==========================================
+
+def display_category_table():
+    """Affiche le tableau des ID et des noms pour la référence."""
+    print("\n--- TABLEAU DE RÉFÉRENCE DES CATÉGORIES YOUTUBE ---")
+    table_data = [[id, name] for id, name in CATEGORY_MAP.items()]
+    # Utilise tabulate pour un affichage propre
+    print(tabulate(table_data, headers=["ID", "Catégorie"], tablefmt="fancy_grid"))
+
+def get_category_name(category_id):
+    """Convertit un ID en nom de catégorie."""
+    return CATEGORY_MAP.get(category_id, f"ID Inconnu ({category_id})")
+
+# ==========================================
+# FONCTIONS D'ANALYSE (Reprise de la version précédente)
+# ==========================================
+
+def get_youtube_client():
+    return build('youtube', 'v3', developerKey=API_KEY)
+
+def get_current_trending_videos(youtube):
+    """Récupère les tendances actuelles."""
+    request = youtube.videos().list(
+        part="snippet,statistics",
+        chart="mostPopular",
+        regionCode="FR",
+        maxResults=50
+    )
+    response = request.execute()
+
+    trending_list = []
+    for item in response['items']:
+        trending_list.append({
+            'video_id': item['id'],
+            'category_id': item['snippet']['categoryId']
+        })
+    return pd.DataFrame(trending_list)
+
+def load_my_history(filepath):
+    """Charge et nettoie l'historique."""
+    try:
+        with open(filepath, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        print(f"Erreur : Fichier {filepath} introuvable.")
+        return pd.DataFrame()
+
+    my_history = []
+    for entry in data:
+        if 'titleUrl' in entry and 'watch?v=' in entry['titleUrl']:
+            video_id = entry['titleUrl'].split('watch?v=')[-1][:11]
+            my_history.append({'video_id': video_id, 'date': entry['time']})
+    return pd.DataFrame(my_history).drop_duplicates(subset=['video_id'])
+
+def analyze_influence():
+    youtube = get_youtube_client()
+
+    df_trending = get_current_trending_videos(youtube)
+    df_my_history = load_my_history(TAKEOUT_FILE)
+
+    # Étape 1 : Calculer l'intersection
+    videos_communes = df_my_history[df_my_history['video_id'].isin(df_trending['video_id'])]
+    nb_communs = len(videos_communes)
+
+    # Étape 2 : Récupérer les catégories de votre historique récent
+    recent_ids = df_my_history['video_id'].head(50).tolist()
+    res = youtube.videos().list(part="snippet", id=",".join(recent_ids)).execute()
+    my_categories_list = [item['snippet']['categoryId'] for item in res['items']]
+
+    df_my_cats = pd.DataFrame(my_categories_list, columns=['category_id'])
+
+    # --- Préparation pour le graphique ---
+    df_trending['category_name'] = df_trending['category_id'].apply(get_category_name)
+    df_my_cats['category_name'] = df_my_cats['category_id'].apply(get_category_name)
+
+    # VISUALISATION
+    sns.set_theme(style="whitegrid")
+
+    plt.figure(figsize=(14, 7))
+
+    # Graphique 1 : Catégories en Tendance (Noms affichés)
+    plt.subplot(1, 2, 1)
+    # Utilisez 'category_name' pour les étiquettes
+    df_trending['category_name'].value_counts().plot(kind='pie', autopct='%1.1f%%', title="Catégories en Tendance (France)")
+    plt.ylabel('Proportion')
+
+    # Graphique 2 : Mes Catégories (Noms affichés)
+    plt.subplot(1, 2, 2)
+    df_my_cats['category_name'].value_counts().plot(kind='pie', autopct='%1.1f%%', title="Mes Catégories (Audit Personnel)")
+    plt.ylabel('Proportion')
+
+    plt.tight_layout()
+    plt.show()
+
+    # CONCLUSION
+    print(f"\n--- RÉSULTAT DE L'AUDIT ---")
+    print(f"Vous avez regardé {nb_communs} vidéos qui sont actuellement dans le Top 50 Tendances.")
+    influence_score = (nb_communs / 50) * 100
+    print(f"Votre indice d'influence directe est de : {influence_score:.1f}%")
+
+# ==========================================
+# MAIN EXECUTION
+# ==========================================
+
+if __name__ == "__main__":
+    display_category_table() # Affiche le tableau de référence au début
+    analyze_influence()
+```
+
+
 ![](Catégories_en_Tendance.png)
 
 
@@ -264,6 +410,113 @@ Ce code synthétise les résultats précédents en un indicateur unique.
 Le pourcentage d’influence directe est converti en score sur 10, puis interprété automatiquement selon trois niveaux :
 Bulle de Niche (≤2), Influence Modérée (3–5), Mainstream (≥6) .
 
+```
+import pandas as pd
+import json
+from googleapiclient.discovery import build
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# ==========================================
+# CONFIGURATION
+# ==========================================
+API_KEY = "AIzaSyAWr5iPhQC3U5Af_Ts5bf8qPc6BP_rTJH0"  # <--- METTEZ VOTRE CLÉ ICI
+TAKEOUT_FILE = "watch-history.json"
+
+# ==========================================
+# FONCTIONS TECHNIQUES
+# ==========================================
+
+def calculate_sensitivity_score(influence_percentage):
+    """Calcule le score de 1 à 10."""
+    score = influence_percentage / 5
+    if score < 1: score = 1.0
+    if score > 10: score = 10.0
+    return round(score, 1)
+
+def get_current_trending_videos(youtube):
+    """Récupère le Top 50 YouTube France."""
+    try:
+        request = youtube.videos().list(
+            part="snippet,statistics",
+            chart="mostPopular",
+            regionCode="FR",
+            maxResults=50
+        )
+        response = request.execute()
+        trending_list = [{'video_id': item['id'], 'category_id': item['snippet']['categoryId']} for item in response['items']]
+        return pd.DataFrame(trending_list)
+    except Exception as e:
+        print(f"Erreur API YouTube : {e}")
+        return pd.DataFrame()
+
+def load_my_history(filepath):
+    """Charge votre fichier Takeout."""
+    try:
+        with open(filepath, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+
+        my_history = []
+        for entry in data:
+            if 'titleUrl' in entry:
+                video_id = entry['titleUrl'].split('v=')[-1][:11]
+                my_history.append({'video_id': video_id})
+        return pd.DataFrame(my_history)
+    except FileNotFoundError:
+        print(f"❌ ERREUR : Le fichier '{filepath}' est introuvable. Glissez-le dans le dossier à gauche sur Colab.")
+        return pd.DataFrame()
+
+# ==========================================
+# FONCTION PRINCIPALE (Celle qui affiche tout)
+# ==========================================
+
+def analyze_influence():
+    print("🚀 Démarrage de l'analyse...\n")
+
+    # 1. Connexion API
+    youtube = build('youtube', 'v3', developerKey=API_KEY)
+
+    # 2. Chargement des données
+    df_trending = get_current_trending_videos(youtube)
+    df_my_history = load_my_history(TAKEOUT_FILE)
+
+    if df_trending.empty or df_my_history.empty:
+        print("⚠️ Analyse impossible : données manquantes.")
+        return
+
+    # 3. Comparaison (Intersection)
+    videos_communes = df_my_history[df_my_history['video_id'].isin(df_trending['video_id'])]
+    nb_communs = len(videos_communes)
+
+    # 4. Calcul des scores
+    influence_perc = (nb_communs / 50) * 100
+    sensi_score = calculate_sensitivity_score(influence_perc)
+
+    # 5. AFFICHAGE DES RÉSULTATS DANS LA CONSOLE
+    print("-" * 40)
+    print("📊 RÉSULTATS DE L'AUDIT RGPD")
+    print("-" * 40)
+    print(f"✅ Vidéos analysées dans votre historique : {len(df_my_history)}")
+    print(f"🔥 Vidéos en commun avec le Top 50 Tendances : {nb_communs}")
+    print(f"🎯 Indice d'influence directe : {influence_perc}%")
+    print(f"\n⚡ SCORE DE SENSIBILITÉ (1-10) : {sensi_score}/10")
+    print("-" * 40)
+
+    # 6. Petit message d'interprétation automatique
+    if sensi_score <= 2:
+        print("Interprétation : Vous êtes dans une 'Bulle de Niche'. L'algorithme vous connaît trop bien pour vous proposer du contenu généraliste.")
+    elif sensi_score <= 5:
+        print("Interprétation : Influence modérée. Vous suivez quelques tendances mais gardez un profil spécifique.")
+    else:
+        print("Interprétation : Profil 'Mainstream'. Vous êtes fortement synchronisé avec la culture populaire actuelle.")
+
+# ==========================================
+# LANCEMENT (Indispensable pour que ça s'affiche !)
+# ==========================================
+if __name__ == "__main__":
+    analyze_influence()
+```
+
 - Interprétation analytique
 
 Un score faible traduit une prédictibilité élevée du comportement utilisateur.
@@ -277,6 +530,61 @@ Cette situation correspond à une forme d’enfermement algorithmique : la perso
 Ce dernier bloc extrait les tags des vidéos tendances et des vidéos récemment visionnées par l’utilisateur.
 Il calcule l’intersection sémantique entre ces ensembles afin de mesurer une synchronisation thématique, indépendamment de l’identité exacte des vidéos.
 
+```
+import pandas as pd
+from googleapiclient.discovery import build
+import matplotlib.pyplot as plt
+
+# CONFIGURATION
+API_KEY = "AIzaSyAWr5iPhQC3U5Af_Ts5bf8qPc6BP_rTJH0"
+TAKEOUT_FILE = "watch-history.json"
+
+def get_tags_analysis():
+    youtube = build('youtube', 'v3', developerKey=API_KEY)
+
+    # 1. RÉCUPÉRER LES TAGS DES TENDANCES (L'air du temps)
+    print("Analyse des thématiques tendances en France...")
+    request = youtube.videos().list(part="snippet", chart="mostPopular", regionCode="FR", maxResults=50)
+    res_trending = request.execute()
+
+    trending_tags = []
+    for item in res_trending['items']:
+        tags = item['snippet'].get('tags', [])
+        trending_tags.extend([t.lower() for t in tags])
+
+    # 2. RÉCUPÉRER LES TAGS DE VOTRE HISTORIQUE (Votre bulle)
+    print("Analyse de vos thématiques personnelles...")
+    # On prend les 20 dernières vidéos pour voir l'influence récente
+    df_history = load_my_history(TAKEOUT_FILE).head(20)
+    my_ids = df_history['video_id'].tolist()
+
+    res_my_videos = youtube.videos().list(part="snippet", id=",".join(my_ids)).execute()
+    my_tags = []
+    for item in res_my_videos['items']:
+        tags = item['snippet'].get('tags', [])
+        my_tags.extend([t.lower() for t in tags])
+
+    # 3. CALCUL DE LA SYNCHRONISATION
+    set_trending = set(trending_tags)
+    set_my = set(my_tags)
+    common_tags = set_trending.intersection(set_my)
+
+    sync_score = (len(common_tags) / len(set_trending)) * 100 if set_trending else 0
+
+    # 4. AFFICHAGE
+    print(f"\n--- AUDIT DES TENDANCES CACHÉES ---")
+    print(f"Mots-clés en commun avec les tendances : {list(common_tags)[:10]}...")
+    print(f"Indice de Synchronisation Thématique : {sync_score:.2f}%")
+
+    # Échelle de 1 à 10 pour la santé mentale
+    mental_impact_score = round(sync_score / 2, 1) # Plus on est synchronisé, plus l'influence est forte
+    if mental_impact_score > 10: mental_impact_score = 10.0
+
+    print(f"Score d'exposition aux thématiques globales : {mental_impact_score}/10")
+
+# Appel de la fonction
+get_tags_analysis()
+```
 - Interprétation analytique
 
 Cette analyse révèle une influence plus diffuse mais plus profonde.
