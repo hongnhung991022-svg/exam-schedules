@@ -38,6 +38,11 @@ Ce premier bloc met en place l’environnement logiciel du projet.
 Il importe les bibliothèques essentielles : Pandas pour la manipulation des données, Matplotlib / Seaborn pour la visualisation, et google-api-python-client pour l’accès à l’API YouTube.
 La clé API permet l’authentification des requêtes et l’accès aux métadonnées normalement non exposées à l’utilisateur.
 
+```
+# Cellule 1 : Installation des outils
+!pip install pandas matplotlib seaborn google-api-python-client isodate
+```
+
 - Interprétation analytique
 
 Cette étape constitue le socle de l’appropriation des données personnelles.
