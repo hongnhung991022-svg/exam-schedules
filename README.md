@@ -57,7 +57,7 @@ Ce code charge le fichier watch-history.json issu de Google Takeout et enrichit 
 Un mécanisme de mise à jour incrémentale est implémenté afin de limiter la consommation du quota API : seules les vidéos non encore analysées sont traitées.
 Les visualisations produites portent sur les chaînes dominantes, la répartition horaire du visionnage et la popularité des contenus consommés.
 
-```{py}
+```
 import pandas as pd
 import json
 import os
@@ -579,27 +579,31 @@ Même en l’absence de consommation directe des contenus viraux, une forte conv
 Elle met en évidence une pollution thématique : l’influence de masse persiste sous une forme personnalisée, moins visible mais tout aussi structurante pour l’attention et l’état cognitif de l’utilisateur.
 
 # Résultats et observations
-L’analyse met en évidence :
-- Une forte répétition de certains mots-clés
-- Une homogénéisation progressive des contenus recommandés
-- Une exposition différenciée selon les centres d’intérêt initiaux
 
-Ces éléments confirment l’existence de bulles algorithmiques influençant la consommation de contenu.
+Les analyses montrent que l’influence algorithmique n’a pas disparu avec la suppression de l’onglet Tendances, mais qu’elle s’est transformée en une personnalisation invisible.
+L’utilisateur est majoritairement exposé à une bulle de niche, tout en restant synchronisé thématiquement avec les logiques virales dominantes (urgence, polémique, sensationnel).
+
 # Conclusion : Vers une hygiène numérique éclairée
-Ce projet montre comment un simple audit de données personnelles peut révéler des mécanismes algorithmiques invisibles.
+Ce projet met en évidence que l’algorithme n’élimine pas les contenus anxiogènes, mais les diffuse sous une forme personnalisée.
 
 Grâce à :
 - l’accès aux données personnelles (RGPD),
 - l’usage d’outils de programmation accessibles,
 - l’utilisateur peut reprendre une partie du contrôle sur sa consommation numérique.
 
-L’objectif n’est pas de rejeter YouTube, mais de développer une conscience critique face aux systèmes de recommandation.
+L’objectif n’est pas de rejeter YouTube, mais de développer une conscience critique et de reprendre partiellement le contrôle de sa consommation numérique.
 
-# Perspectives d’amélioration
-- Analyse temporelle de l’évolution des recommandations
-- Comparaison entre plusieurs profils utilisateurs
-- Visualisations avancées (graphes, réseaux de tags)
-- Automatisation complète du pipeline
+# Les Forces du Code
+- Croisement efficace entre données RGPD et API YouTube.
+- Analyse locale respectant la confidentialité des données personnelles.
+- Évaluation de l’influence sur plusieurs dimensions (directe, thématique, comportementale).
+- Optimisation des appels API pour respecter les quotas.
+  
+# Les Limites du Code
+- Biais temporel entre l’historique utilisateur et les tendances actuelles.
+- Dépendance aux quotas de l’API YouTube.
+- Données RGPD imparfaites (Shorts, publicités non distinguées).
+- Gestion des erreurs API encore limitée.
 
 # Auteur
 - Nenad Jovanovic
