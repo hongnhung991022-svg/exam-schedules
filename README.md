@@ -66,12 +66,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from datetime import datetime
 
-# ==========================================
-# CONFIGURATION
-# ==========================================
-API_KEY = "AIzaSyAWr5iPhQC3U5Af_Ts5bf8qPc6BP_rTJH0" # À ne jamais mettre sur Git ! Utilisez un fichier config ou env.
-DB_FILE = "local_video_database.csv"
-TAKEOUT_FILE = "watch-history.json" # Le fichier téléchargé depuis Google
 
 # ==========================================
 # MODULE 1 : GESTION DES DONNÉES ET MISE À JOUR
@@ -256,11 +250,6 @@ from tabulate import tabulate
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# ==========================================
-# CONFIGURATION
-# ==========================================
-API_KEY = "AIzaSyAWr5iPhQC3U5Af_Ts5bf8qPc6BP_rTJH0" # Collez votre clé ici
-TAKEOUT_FILE = "watch-history.json"
 # Liste de correspondance des ID et noms de catégories (les plus courants)
 CATEGORY_MAP = {
     "1": "Film & Animation",
@@ -418,12 +407,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # ==========================================
-# CONFIGURATION
-# ==========================================
-API_KEY = "AIzaSyAWr5iPhQC3U5Af_Ts5bf8qPc6BP_rTJH0"  # <--- METTEZ VOTRE CLÉ ICI
-TAKEOUT_FILE = "watch-history.json"
-
-# ==========================================
 # FONCTIONS TECHNIQUES
 # ==========================================
 
@@ -535,9 +518,6 @@ import pandas as pd
 from googleapiclient.discovery import build
 import matplotlib.pyplot as plt
 
-# CONFIGURATION
-API_KEY = "AIzaSyAWr5iPhQC3U5Af_Ts5bf8qPc6BP_rTJH0"
-TAKEOUT_FILE = "watch-history.json"
 
 def get_tags_analysis():
     youtube = build('youtube', 'v3', developerKey=API_KEY)
