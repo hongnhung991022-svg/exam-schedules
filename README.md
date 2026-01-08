@@ -52,7 +52,7 @@ Ce code charge le fichier watch-history.json issu de Google Takeout et enrichit 
 Un mécanisme de mise à jour incrémentale est implémenté afin de limiter la consommation du quota API : seules les vidéos non encore analysées sont traitées.
 Les visualisations produites portent sur les chaînes dominantes, la répartition horaire du visionnage et la popularité des contenus consommés.
 
-![Ma bulle ](Ma%20bulle.png)
+![Ma bulle ](Ma_bulle.png)
 
 - Interprétation analytique
 
