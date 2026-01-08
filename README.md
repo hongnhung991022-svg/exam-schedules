@@ -615,5 +615,5 @@ L’objectif n’est pas de rejeter YouTube, mais de développer une conscience 
 - Automatisation complète du pipeline
 
 # Auteur
-Nenad Jovanovic
-Thi Hong Nhung Nguyen
+- Nenad Jovanovic
+- Thi Hong Nhung Nguyen
