@@ -53,7 +53,9 @@ Un mécanisme de mise à jour incrémentale est implémenté afin de limiter la 
 Les visualisations produites portent sur les chaînes dominantes, la répartition horaire du visionnage et la popularité des contenus consommés.
 
 ![](Ma_Bulle.png)
+
 ![](Chronobiologie_de_l'addiction.png)
+
 ![](MainstreamvsNiche.png)
 
 - Interprétation analytique
