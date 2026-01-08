@@ -591,3 +591,29 @@ Cette analyse révèle une influence plus diffuse mais plus profonde.
 Même en l’absence de consommation directe des contenus viraux, une forte convergence des thématiques indique une exposition aux mêmes mécanismes émotionnels (urgence, conflit, controverse).
 Elle met en évidence une pollution thématique : l’influence de masse persiste sous une forme personnalisée, moins visible mais tout aussi structurante pour l’attention et l’état cognitif de l’utilisateur.
 
+# Résultats et observations
+L’analyse met en évidence :
+- Une forte répétition de certains mots-clés
+- Une homogénéisation progressive des contenus recommandés
+- Une exposition différenciée selon les centres d’intérêt initiaux
+
+Ces éléments confirment l’existence de bulles algorithmiques influençant la consommation de contenu.
+# Conclusion : Vers une hygiène numérique éclairée
+Ce projet montre comment un simple audit de données personnelles peut révéler des mécanismes algorithmiques invisibles.
+
+Grâce à :
+- l’accès aux données personnelles (RGPD),
+- l’usage d’outils de programmation accessibles,
+- l’utilisateur peut reprendre une partie du contrôle sur sa consommation numérique.
+
+L’objectif n’est pas de rejeter YouTube, mais de développer une conscience critique face aux systèmes de recommandation.
+
+# Perspectives d’amélioration
+- Analyse temporelle de l’évolution des recommandations
+- Comparaison entre plusieurs profils utilisateurs
+- Visualisations avancées (graphes, réseaux de tags)
+- Automatisation complète du pipeline
+
+# Auteur
+Nenad Jovanovic
+Thi Hong Nhung Nguyen
