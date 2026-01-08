@@ -57,7 +57,7 @@ Ce code charge le fichier watch-history.json issu de Google Takeout et enrichit 
 Un mécanisme de mise à jour incrémentale est implémenté afin de limiter la consommation du quota API : seules les vidéos non encore analysées sont traitées.
 Les visualisations produites portent sur les chaînes dominantes, la répartition horaire du visionnage et la popularité des contenus consommés.
 
-```
+```{py}
 import pandas as pd
 import json
 import os
@@ -65,6 +65,13 @@ from googleapiclient.discovery import build
 import matplotlib.pyplot as plt
 import seaborn as sns
 from datetime import datetime
+
+# ==========================================
+# CONFIGURATION
+# ==========================================
+API_KEY = "Insérer votre clé API ici" # À ne jamais mettre sur Git ! Utilisez un fichier config ou env.
+DB_FILE = "local_video_database.csv"
+TAKEOUT_FILE = "Insérer votre fichier watch-history.json ici" # Le fichier téléchargé depuis Google
 
 
 # ==========================================
