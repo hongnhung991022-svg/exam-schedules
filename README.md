@@ -581,7 +581,7 @@ Elle met en évidence une pollution thématique : l’influence de masse persist
 # Résultats et observations
 
 Les analyses montrent que l’influence algorithmique n’a pas disparu avec la suppression de l’onglet Tendances, mais qu’elle s’est transformée en une personnalisation invisible.
-L’utilisateur est majoritairement exposé à une bulle de niche, tout en restant synchronisé thématiquement avec les logiques virales dominantes (urgence, polémique, sensationnel).
+L’utilisateur pris en example est majoritairement exposé à une bulle de niche, tout en restant synchronisé thématiquement avec les logiques virales dominantes (urgence, polémique, sensationnel).
 
 # Conclusion : Vers une hygiène numérique éclairée
 Ce projet met en évidence que l’algorithme n’élimine pas les contenus anxiogènes, mais les diffuse sous une forme personnalisée.
